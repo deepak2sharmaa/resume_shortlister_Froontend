@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { validateEmail } from '@/lib/validations';
 import OTPModal from '@/components/OTPModal';
 
-export default function ForgotPassword() {
+export default function VerifyOtp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -18,7 +19,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!validateEmail(email)) {
       setError('Please enter a valid email address');
       return;
@@ -28,7 +29,7 @@ export default function ForgotPassword() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/forgot-password_request', {
+      const response = await fetch('http://localhost:3000/api/resend-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -40,19 +41,19 @@ export default function ForgotPassword() {
         // OTP sent successfully → show OTP modal
         setShowOTPModal(true);
       } else {
+        // Show error message from backend
         setError(data.message || 'Failed to send OTP');
       }
-    } catch {
+    } catch (err) {
       setError('Server error. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleOTPSuccess = (otp?: string, newPassword?: string) => {
-    // This function is called after OTP verification and password reset
-    navigate('/login', {
-      state: { message: 'Password reset successfully! Please login with your new password.' },
+  const handleOTPSuccess = () => {
+    navigate('/login', { 
+      state: { message: 'Email verified successfully! Please login.' } 
     });
   };
 
@@ -60,10 +61,10 @@ export default function ForgotPassword() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">Forgot Password</CardTitle>
-          <CardDescription>Enter your email to reset your password</CardDescription>
+          <CardTitle className="text-2xl font-bold text-gray-900">Verify Account</CardTitle>
+          <CardDescription>Enter your email to verify your account</CardDescription>
         </CardHeader>
-
+        
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -98,9 +99,9 @@ export default function ForgotPassword() {
       <OTPModal
         isOpen={showOTPModal}
         onClose={() => setShowOTPModal(false)}
-        type="reset"
+        type="verify"
         email={email}
-        onSuccess={(otp, newPassword) => handleOTPSuccess(otp, newPassword)}
+        onSuccess={handleOTPSuccess}
       />
     </div>
   );

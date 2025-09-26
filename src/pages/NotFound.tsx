@@ -1,24 +1,25 @@
-import { Button } from '@/components/ui/button';
 
-export default function NotFoundPage() {
+
+
+
+
+import React from "react";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+
+const NotFound: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 p-6 text-center">
-      <div className="space-y-6 max-w-md">
-        <div className="space-y-3">
-          <h1 className="text-8xl font-bold text-blue-600">404</h1>
-          <h2 className="text-2xl font-semibold text-gray-800">Page Not Found</h2>
-          <p className="text-muted-foreground">The page you're looking for doesn't exist or may have been moved.</p>
+    <>
+      <Navbar />
+      <main className="max-w-4xl mx-auto p-6">
+        <div className="bg-white p-8 rounded shadow text-center">
+          <h1 className="text-4xl font-bold mb-2">404</h1>
+          <p className="mb-4">Page not found</p>
+          <Link to="/" className="px-4 py-2 bg-sky-600 text-white rounded">Go Home</Link>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild>
-            <a href="/">Return Home</a>
-          </Button>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            Go Back
-          </Button>
-        </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
-}
+};
+
+export default NotFound;
